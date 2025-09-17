@@ -270,37 +270,35 @@ class IntArray():
     def remove(self, index: int) -> int:
         """
         Remove element at any index in the array.
+        Returns the removed value.
         """
-
-        if not (0 <= index <= self._size - 1):
+        
+        if not (0 <= index < self._size):
             raise IndexError("Index out of range")
+
+        val = self.__getitem__(index)
 
         new_resmem = ReservedMemory((self._size - 1) * self._bytes_per_element)
 
         if index > 0:
             new_resmem.copy(
                 self._resmem,
-                count=index * self._bytes_per_element,  # number of bytes
+                count=index * self._bytes_per_element,
                 source_index=0,
-                destination_index=0
+                destination_index=0,
             )
 
-        # Get the last element's value
-        val = self.__getitem__(self._size - 1)
-
-        old_resmem = self._resmem
-        self._resmem = new_resmem
-
-        if index < self._size:
+        if index < self._size - 1:
             new_resmem.copy(
-                old_resmem,
-                count=(self._size - index) * self._bytes_per_element,
-                source_index=index * self._bytes_per_element,
-                destination_index=(index + 1) * self._bytes_per_element
+                self._resmem,
+                count=(self._size - index - 1) * self._bytes_per_element,
+                source_index=(index + 1) * self._bytes_per_element,
+                destination_index=index * self._bytes_per_element,
             )
 
         self._resmem = new_resmem
         self._size -= 1
+
         return val
 
 
