@@ -268,5 +268,39 @@ class IntArray():
         return val
 
     def insert(self, index: int, val: int) -> None:
-        ### Remove this comment and the `return` line and write your code here!
-        return
+        """
+        Insert element at any index in the array.
+        """
+
+        if not (0 <= index <= self._size):
+            raise IndexError("Index out of range")
+
+        if not isinstance(val, int) or not self._min_val <= val <= self._max_val:
+            raise TypeError(
+                f"Value must be an integer between {self._min_val} and {self._max_val}"
+            )
+
+        new_resmem = ReservedMemory((self._size + 1) * self._bytes_per_element)
+
+        if index > 0:
+            new_resmem.copy(
+                self._resmem,
+                count=index * self._bytes_per_element,  # number of bytes
+                source_index=0,
+                destination_index=0
+            )
+
+        old_resmem = self._resmem
+        self._resmem = new_resmem
+        self.__setitem__(index, val)
+
+        if index < self._size:
+            new_resmem.copy(
+                old_resmem,
+                count=(self._size - index) * self._bytes_per_element,
+                source_index=index * self._bytes_per_element,
+                destination_index=(index + 1) * self._bytes_per_element
+            )
+
+        self._resmem = new_resmem
+        self._size += 1
