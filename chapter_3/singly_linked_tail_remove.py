@@ -139,5 +139,27 @@ class SinglyLinkedList():
         if self._size == 0:
             return None
 
+        if index == 0:
+            value = self._head.data
+            self._head = self._head.next
+            if self._head is None:
+                self._tail = None
+            self._size -= 1
+            return value
+
+        prev = self._head
         curr_index = 0
-        return
+
+        while curr_index < index - 1:
+            prev = prev.next
+            curr_index += 1
+
+        remove = prev.next
+        value = remove.data
+        prev.next = remove.next
+        self._size -= 1
+
+        if remove == self._tail:
+            self._tail = prev
+
+        return value
