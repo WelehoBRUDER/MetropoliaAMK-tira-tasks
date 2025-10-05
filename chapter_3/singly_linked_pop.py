@@ -39,3 +39,23 @@ class SinglyLinkedList():
             while current_node.next != None:
                 current_node = current_node.next
             current_node.next = node
+
+    # Remove last value of the list and return it
+    def pop(self):
+        if not self._head:
+            return None
+
+        if not self._head.next:
+            value = self._head.data
+            self._head = None
+            return value
+
+        prev = self._head
+        curr = self._head.next
+
+        while curr.next:
+            prev = curr
+            curr = curr.next
+
+        prev.next = None
+        return curr.data
